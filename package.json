@@ -1,0 +1,13 @@
+{
+  "name": "quickbite-canteen",
+  "version": "1.0.0",
+  "description": "Smart Canteen Pre-Order and Queue Management with SQLite Backend Database",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": ["canteen", "sqlite", "database", "pre-order", "queue-management"],
+  "author": "",
+  "license": "ISC"
+}

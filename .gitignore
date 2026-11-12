@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# SQLite temporary journal files
+*.db-wal
+*.db-shm
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment and OS
+.env
+.DS_Store
+Thumbs.db
+.vscode/

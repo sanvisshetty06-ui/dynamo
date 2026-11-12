@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="QuickBite - Smart Canteen Pre-Order, UPI Payment, Discount Coupons, Review System and Queue Management">
+  <title>QuickBite | Smart Canteen</title>
+  <style>
+    :root {
+      --orange: #f46b38;
+      --orange-dark: #df5526;
+      --ink: #20242b;
+      --muted: #697386;
+      --cream: #fff8f3;
+      --line: #eceef2;
+      --green: #168653;
+      --blue: #2563eb;
+      --purple: #7c3aed;
+      --amber: #d97706;
+      --shadow: 0 12px 32px rgba(31, 41, 55, .08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      background: #f7f8fa;
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    button { font: inherit; cursor: pointer; }
+    .topbar {
+      background: white; border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav {
+      max-width: 1160px; margin: auto; padding: 14px 22px;
+      display: flex; align-items: center; justify-content: space-between; gap: 15px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; font-size: 1.35rem; font-weight: 800; }
+    .brand-mark {
+      width: 40px; height: 40px; display: grid; place-items: center;
+      background: var(--orange); color: white; border-radius: 13px;
+    }
+    .brand span:last-child { color: var(--orange); }
+    .nav-links { display: flex; align-items: center; gap: 20px; }
+    .nav-links a { color: #4c5563; text-decoration: none; font-weight: 650; font-size: .92rem; }
+    .nav-links a:hover { color: var(--orange); }
+    .cart-link {
+      background: var(--cream); color: var(--orange-dark); border: 1px solid #ffdfcf;
+      border-radius: 999px; padding: 8px 14px; font-weight: 750; text-decoration: none; font-size: .9rem;
+    }
+    .db-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #eef9f2; color: #15803d; border: 1px solid #ccebd7;
+      padding: 4px 10px; border-radius: 999px; font-size: .8rem; font-weight: 700;
+    }
+    .db-badge .dot {
+      width: 8px; height: 8px; background: #22c55e; border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(34,197,94,0.25);
+    }
+    .sound-btn {
+      background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155;
+      padding: 6px 11px; border-radius: 8px; font-weight: 650; font-size: .8rem;
+      display: inline-flex; align-items: center; gap: 5px;
+    }
+    .sound-btn:hover { background: #e2e8f0; }
+
+    .hero {
+      background: radial-gradient(circle at 85% 20%, rgba(255,255,255,.2), transparent 25%),
+                  linear-gradient(115deg, #e95e2e, #ff9b54);
+      color: white; padding: 58px 22px;
+    }
+    .hero-inner {
+      max-width: 1160px; margin: auto; display: grid;
+      grid-template-columns: 1.4fr .8fr; align-items: center; gap: 35px;
+    }
+    .eyebrow {
+      display: inline-block; background: rgba(255,255,255,.18);
+      padding: 6px 12px; border-radius: 999px; font-size: .82rem; font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .hero h1 { font-size: clamp(2.1rem, 4.5vw, 3.5rem); line-height: 1.1; max-width: 680px; }
+    .hero p { margin: 15px 0 22px; color: #fff3eb; font-size: 1.05rem; max-width: 570px; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .primary-light {
+      background: white; color: var(--orange-dark); border: 0; border-radius: 10px;
+      padding: 12px 18px; font-weight: 800; box-shadow: 0 5px 15px rgba(0,0,0,.1);
+    }
+    .secondary-light {
+      background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.4);
+      border-radius: 10px; padding: 12px 18px; font-weight: 800; text-decoration: none;
+    }
+    .secondary-light:hover { background: rgba(255,255,255,0.3); }
+
+    .hero-card {
+      justify-self: end; width: min(100%, 320px); padding: 22px; border-radius: 20px;
+      background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.25);
+      backdrop-filter: blur(8px); text-align: center;
+    }
+    .hero-card .emoji { font-size: 3.8rem; }
+    .hero-card h3 { margin: 6px 0 3px; font-size: 1.2rem; }
+    .hero-card p { margin: 0; font-size: .9rem; }
+    .hero-stats {
+      margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.2);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: .82rem;
+    }
+    .hero-stats strong { font-size: 1.2rem; display: block; }
+
+    .wrap { max-width: 1160px; margin: auto; padding: 40px 22px; }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 15px; margin-bottom: 22px; }
+    .section-heading h2 { font-size: 1.75rem; }
+    .section-heading p { color: var(--muted); margin-top: 4px; }
+    
+    .category-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+    .category-btn {
+      border: 1px solid #e4e7ec; background: white; color: #505968;
+      padding: 8px 16px; border-radius: 999px; font-weight: 700;
+      transition: all .2s; font-size: .9rem;
+    }
+    .category-btn.active, .category-btn:hover {
+      background: var(--orange); color: white; border-color: var(--orange);
+    }
+
+    .menu-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .food-card {
+      background: white; border: 1px solid var(--line); border-radius: 17px;
+      overflow: hidden; box-shadow: 0 5px 18px rgba(31,41,55,.04);
+      transition: transform .2s, box-shadow .2s;
+      display: flex; flex-direction: column; position: relative;
+    }
+    .food-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .food-art {
+      min-height: 125px; display: grid; place-items: center;
+      background: linear-gradient(135deg, #fff0e6, #fff9f3); font-size: 3.8rem;
+    }
+    .food-rating-badge {
+      position: absolute; top: 12px; right: 12px;
+      background: white; padding: 3px 8px; border-radius: 999px;
+      font-size: .78rem; font-weight: 750; color: #b45309; box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      display: flex; align-items: center; gap: 3px;
+    }
+    .food-info { padding: 16px; display: flex; flex-direction: column; flex: 1; }
+    .food-info h3 { font-size: 1.05rem; margin-bottom: 5px; }
+    .food-info p { color: var(--muted); font-size: .84rem; min-height: 38px; flex: 1; }
+    .food-bottom { display: flex; align-items: center; justify-content: space-between; margin-top: 14px; }
+    .price { font-size: 1.15rem; font-weight: 800; }
+    .add-btn {
+      background: var(--orange); color: white; border: 0; border-radius: 9px;
+      padding: 8px 13px; font-weight: 750; transition: background .15s;
+    }
+    .add-btn:hover { background: var(--orange-dark); }
+
+    /* CONTENT GRID */
+    .content-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
+    .panel {
+      background: white; border: 1px solid var(--line); border-radius: 17px;
+      padding: 24px; box-shadow: 0 5px 18px rgba(31,41,55,.04);
+      display: flex; flex-direction: column;
+    }
+    .panel h2 { font-size: 1.35rem; margin-bottom: 17px; }
+    .cart-empty { color: var(--muted); padding: 18px 0; }
+    .cart-row {
+      display: grid; grid-template-columns: 1fr auto; gap: 10px;
+      padding: 12px 0; border-bottom: 1px solid var(--line);
+    }
+    .cart-row strong { display: block; font-size: .95rem; }
+    .cart-row small { color: var(--muted); }
+    .qty-controls { display: flex; align-items: center; gap: 9px; margin-top: 6px; }
+    .qty-controls button {
+      width: 26px; height: 26px; border: 1px solid #ffd7c5; border-radius: 7px;
+      color: var(--orange-dark); background: var(--cream); font-weight: 800;
+    }
+    .remove-btn { border: 0; background: transparent; color: #c24135; font-size: .8rem; margin-left: 6px; }
+    
+    /* Promo Code Box */
+    .promo-box {
+      background: #fafafc; border: 1px dashed #cbd5e1; border-radius: 12px;
+      padding: 12px; margin-top: 14px;
+    }
+    .promo-form { display: flex; gap: 8px; margin-top: 6px; }
+    .promo-input {
+      flex: 1; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 8px;
+      text-transform: uppercase; font-weight: 700; font-size: .88rem;
+    }
+    .promo-btn {
+      background: var(--ink); color: white; border: 0; border-radius: 8px;
+      padding: 8px 14px; font-weight: 700; font-size: .85rem;
+    }
+    .coupon-chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .chip {
+      background: #f1f5f9; border: 1px solid #e2e8f0; color: #334155;
+      padding: 2px 8px; border-radius: 6px; font-size: .75rem; cursor: pointer; font-weight: 600;
+    }
+    .chip:hover { background: #e2e8f0; border-color: #cbd5e1; }
+
+    /* Totals Breakdown */
+    .cart-breakdown { padding-top: 14px; border-top: 1px solid var(--line); margin-top: 14px; }
+    .breakdown-row { display: flex; justify-content: space-between; font-size: .92rem; color: #475569; margin-bottom: 5px; }
+    .breakdown-row.discount-row { color: #16a34a; font-weight: 700; }
+    .cart-total {
+      display: flex; justify-content: space-between; font-size: 1.25rem;
+      font-weight: 850; padding-top: 8px; border-top: 1px solid var(--line); margin-top: 8px;
+    }
+
+    /* Payment Radio Cards */
+    .payment-group { margin: 14px 0; }
+    .payment-title { font-size: .9rem; font-weight: 700; margin-bottom: 8px; }
+    .payment-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .payment-card {
+      border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 12px; cursor: pointer;
+      display: flex; flex-direction: column; gap: 4px; transition: all .15s; background: white;
+    }
+    .payment-card:hover { border-color: var(--orange); }
+    .payment-card.active { border-color: var(--orange); background: #fff8f5; box-shadow: 0 0 0 1px var(--orange); }
+    .payment-card strong { font-size: .9rem; display: flex; align-items: center; gap: 6px; }
+    .payment-card small { font-size: .78rem; color: var(--muted); }
+
+    .field { margin: 12px 0; }
+    .field label { display: block; font-size: .88rem; font-weight: 700; margin-bottom: 6px; }
+    .field input, .field select {
+      width: 100%; padding: 11px 12px; border: 1px solid #dfe3e9;
+      border-radius: 9px; outline: none; background: white; font-size: .95rem;
+    }
+    .field input:focus, .field select:focus { border-color: var(--orange); }
+    .checkout-btn {
+      width: 100%; border: 0; background: var(--orange); color: white;
+      border-radius: 10px; padding: 13px; font-weight: 800; margin-top: 8px;
+      transition: background .15s; font-size: 1rem;
+    }
+    .checkout-btn:hover { background: var(--orange-dark); }
+    .checkout-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    /* Order Result Card */
+    .order-result {
+      background: #f0fbf5; border: 1px solid #c9efda; border-radius: 12px;
+      padding: 18px; margin-top: 16px; display: none;
+    }
+    .order-result h3 { color: var(--green); margin-bottom: 10px; }
+    .order-token-badge {
+      font-size: 1.3rem; font-weight: 850; color: #166534; background: #dcfce7;
+      padding: 5px 14px; border-radius: 8px; display: inline-block; margin-bottom: 10px;
+    }
+
+    /* Modal for UPI QR Payment */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+      display: none; place-items: center; z-index: 1000; padding: 20px;
+      backdrop-filter: blur(4px);
+    }
+    .modal-card {
+      background: white; border-radius: 20px; max-width: 420px; width: 100%;
+      padding: 26px; box-shadow: 0 20px 40px rgba(0,0,0,.2); text-align: center;
+      position: relative; animation: popIn .2s ease-out;
+    }
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .qr-container {
+      background: white; border: 2px solid #e2e8f0; border-radius: 14px;
+      padding: 18px; display: inline-block; margin: 16px 0;
+    }
+    .qr-visual {
+      width: 180px; height: 180px; margin: auto;
+      background: repeating-conic-gradient(#0f172a 0% 25%, white 0% 50%) 50% / 18px 18px;
+      border: 6px solid #0f172a; border-radius: 8px; display: grid; place-items: center;
+    }
+    .qr-center-pill {
+      background: white; padding: 6px 10px; border-radius: 999px;
+      font-weight: 850; font-size: .8rem; color: var(--orange-dark);
+      border: 1px solid #ffd7c5; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .upi-apps { display: flex; justify-content: center; gap: 12px; margin-top: 8px; font-size: .82rem; color: #64748b; font-weight: 700; }
+
+    /* Live Queue & Tracker Section */
+    .tracker-card {
+      background: white; border: 1px solid var(--line); border-radius: 17px;
+      padding: 24px; box-shadow: 0 5px 18px rgba(31,41,55,.04); margin-bottom: 24px;
+    }
+    .tracker-form { display: flex; gap: 10px; margin: 15px 0; }
+    .tracker-input {
+      flex: 1; padding: 12px 14px; border: 1px solid #dfe3e9;
+      border-radius: 9px; font-size: 1rem;
+    }
+    .tracker-btn {
+      background: var(--ink); color: white; border: 0; border-radius: 9px;
+      padding: 12px 20px; font-weight: 750;
+    }
+    .tracker-btn:hover { background: #323842; }
+
+    /* Status Pills */
+    .status-pill {
+      display: inline-block; padding: 4px 10px; border-radius: 999px;
+      font-size: .8rem; font-weight: 750;
+    }
+    .status-Received { background: #e0f2fe; color: #0369a1; }
+    .status-Preparing { background: #fef3c7; color: #b45309; }
+    .status-Ready { background: #dcfce7; color: #15803d; }
+    .status-Completed { background: #f1f5f9; color: #475569; }
+    .status-Cancelled { background: #fee2e2; color: #b91c1c; }
+
+    /* Cancel Button */
+    .cancel-order-btn {
+      background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca;
+      border-radius: 8px; padding: 7px 14px; font-weight: 750; font-size: .85rem;
+      transition: all .15s; margin-top: 10px;
+    }
+    .cancel-order-btn:hover { background: #fca5a5; color: #7f1d1d; }
+
+    /* Review Card Widget */
+    .review-box {
+      margin-top: 18px; padding: 16px; background: #fffdfa; border: 1px solid #fed7aa;
+      border-radius: 12px;
+    }
+    .star-rating { display: flex; gap: 6px; font-size: 1.5rem; cursor: pointer; margin: 8px 0; }
+    .star { color: #cbd5e1; transition: color .15s; }
+    .star.selected, .star:hover, .star:hover ~ .star { color: #f59e0b; }
+
+    /* Reviews Showcase */
+    .reviews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; margin-top: 14px; }
+    .review-item {
+      background: white; border: 1px solid var(--line); border-radius: 12px;
+      padding: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    /* Staff / Canteen Manager Panel */
+    .canteen-toggle-btn {
+      background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155;
+      padding: 8px 14px; border-radius: 8px; font-weight: 650; font-size: .88rem;
+    }
+    .canteen-panel {
+      margin-top: 30px; background: #fafafb; border: 2px dashed #d1d5db;
+      border-radius: 16px; padding: 22px;
+    }
+    .orders-table {
+      width: 100%; border-collapse: collapse; margin-top: 12px; font-size: .88rem;
+    }
+    .orders-table th, .orders-table td {
+      padding: 10px 12px; text-align: left; border-bottom: 1px solid #e5e7eb;
+    }
+    .orders-table th { background: #f3f4f6; font-weight: 700; color: #374151; }
+    .status-select {
+      padding: 6px 8px; border-radius: 6px; border: 1px solid #cbd5e1; font-weight: 600;
+    }
+
+    footer { text-align: center; background: #20242b; color: #d9dde4; padding: 30px 15px; margin-top: 60px; }
+    footer strong { color: white; }
+
+    @media (max-width: 900px) {
+      .menu-grid { grid-template-columns: repeat(2, 1fr); }
+      .hero-inner { grid-template-columns: 1fr; }
+      .hero-card { justify-self: start; }
+      .content-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 650px) {
+      .nav { flex-wrap: wrap; }
+      .nav-links { order: 3; width: 100%; justify-content: space-between; gap: 8px; }
+      .nav-links a { font-size: .82rem; }
+      .hero { padding: 40px 18px; }
+      .menu-grid { grid-template-columns: 1fr; }
+      .payment-options { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- HEADER -->
+  <header class="topbar">
+    <nav class="nav" aria-label="Main navigation">
+      <a class="brand" href="#home" style="text-decoration:none;color:inherit">
+        <span class="brand-mark">🍴</span><span>Quick<span>Bite</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="#home">Home</a>
+        <a href="#menu">Menu</a>
+        <a href="#order">Pre-order</a>
+        <a href="#queue-tracker">Live Queue</a>
+        <a href="#reviews">Reviews</a>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button type="button" class="sound-btn" onclick="playChime()" title="Click to test pickup sound">
+          🔔 Test Bell
+        </button>
+        <span class="db-badge" title="Connected to SQLite canteen.db">
+          <span class="dot"></span> DB Live
+        </span>
+        <a class="cart-link" href="#order">🛒 Cart <span id="cart-count">0</span></a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+      <div class="hero-inner">
+        <div>
+          <span class="eyebrow">⚡ UPI INSTANT PAY · PROMO DISCOUNTS · LIVE AUDIO ALERTS</span>
+          <h1>Skip the queue.<br>Enjoy your break.</h1>
+          <p>Order fresh campus food ahead of time. Pay instantly with UPI or Cash at counter, apply campus discount coupons, and track kitchen prep in real time.</p>
+          <div class="hero-actions">
+            <button class="primary-light" onclick="document.getElementById('menu').scrollIntoView({behavior:'smooth'})">Explore Menu →</button>
+            <a class="secondary-light" href="#queue-tracker">Track My Order ⏱️</a>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="emoji">🍛</div>
+          <h3>Live Canteen Status</h3>
+          <p id="hero-status-text">Connected to canteen database</p>
+          <div class="hero-stats">
+            <div><strong id="stat-preparing">0</strong> Preparing</div>
+            <div><strong id="stat-ready">0</strong> Ready to Collect</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MENU SECTION -->
+    <section class="wrap" id="menu">
+      <div class="section-heading">
+        <div>
+          <h2>Explore our menu</h2>
+          <p>Loaded dynamically from the SQLite backend database with live student ratings.</p>
+        </div>
+      </div>
+      <div class="category-tabs" aria-label="Filter menu">
+        <button class="category-btn active" data-category="All">All items</button>
+        <button class="category-btn" data-category="Meals">🍛 Meals</button>
+        <button class="category-btn" data-category="Juices">🥤 Juices</button>
+        <button class="category-btn" data-category="Chats">🌮 Chats</button>
+      </div>
+      <div class="menu-grid" id="menu-grid">
+        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--muted);">
+          Loading fresh menu from database...
+        </div>
+      </div>
+    </section>
+
+    <!-- PRE-ORDER SECTION -->
+    <section class="wrap" id="order">
+      <div class="section-heading">
+        <div>
+          <h2>Your pre-order</h2>
+          <p>Review items, apply promo codes, choose your payment mode, and submit directly to the database.</p>
+        </div>
+      </div>
+      <div class="content-grid">
+        
+        <!-- LEFT PANEL: CART & COUPONS -->
+        <div class="panel">
+          <h2>🛒 Your cart</h2>
+          <div id="cart-items"><p class="cart-empty">Your cart is empty. Add something tasty from the menu!</p></div>
+          
+          <!-- FEATURE 2: PROMO CODE SECTION -->
+          <div class="promo-box">
+            <label style="font-size:.85rem;font-weight:700;display:block;">🏷️ Have a Coupon / Promo Code?</label>
+            <div class="promo-form">
+              <input type="text" id="coupon-code-input" class="promo-input" placeholder="e.g. CAMPUS20">
+              <button type="button" class="promo-btn" onclick="applyCoupon()">Apply</button>
+            </div>
+            <div id="coupon-message" style="font-size:.8rem;margin-top:6px;display:none;"></div>
+            <div class="coupon-chips">
+              <span class="chip" onclick="quickApplyCoupon('CAMPUS20')">🏷️ CAMPUS20 (20% off)</span>
+              <span class="chip" onclick="quickApplyCoupon('QUICKBITE')">🏷️ QUICKBITE (₹25 off)</span>
+              <span class="chip" onclick="quickApplyCoupon('STUDENT10')">🏷️ STUDENT10 (10% off)</span>
+            </div>
+          </div>
+
+          <!-- Price Breakdown -->
+          <div class="cart-breakdown">
+            <div class="breakdown-row"><span>Subtotal</span><span id="cart-subtotal">₹0</span></div>
+            <div class="breakdown-row discount-row" id="discount-breakdown-row" style="display:none;">
+              <span id="discount-label">Discount (CAMPUS20)</span>
+              <span id="cart-discount">-₹0</span>
+            </div>
+            <div class="cart-total"><span>Final Total</span><span id="cart-total">₹0</span></div>
+          </div>
+        </div>
+
+        <!-- RIGHT PANEL: PICKUP & PAYMENT -->
+        <div class="panel">
+          <h2>📦 Pickup & Payment</h2>
+          <form id="checkout-form">
+            <div class="field">
+              <label for="student-name">Student name</label>
+              <input id="student-name" type="text" placeholder="e.g. Priya Sharma" required>
+            </div>
+            <div class="field">
+              <label for="student-id">Student ID</label>
+              <input id="student-id" type="text" placeholder="e.g. CS2026-042" required>
+            </div>
+            <div class="field">
+              <label for="pickup-time">Preferred pickup time</label>
+              <select id="pickup-time" required>
+                <option value="">Select a time slot</option>
+                <option>10:30 AM – 10:45 AM</option>
+                <option>11:00 AM – 11:15 AM</option>
+                <option>12:30 PM – 12:45 PM</option>
+                <option>1:00 PM – 1:15 PM</option>
+                <option>1:15 PM – 1:30 PM</option>
+                <option>4:00 PM – 4:15 PM</option>
+              </select>
+            </div>
+
+            <!-- FEATURE 1: PAYMENT METHOD SELECTOR -->
+            <div class="payment-group">
+              <div class="payment-title">💳 Select Payment Mode</div>
+              <div class="payment-options">
+                <div class="payment-card active" id="pay-upi-card" onclick="selectPaymentMethod('UPI')">
+                  <strong>📱 Instant UPI QR</strong>
+                  <small>GPay, PhonePe, Paytm</small>
+                </div>
+                <div class="payment-card" id="pay-cash-card" onclick="selectPaymentMethod('Cash')">
+                  <strong>💵 Cash at Counter</strong>
+                  <small>Pay when collecting food</small>
+                </div>
+              </div>
+            </div>
+
+            <button class="checkout-btn" id="submit-order-btn" type="submit">
+              Proceed to Place Pre-Order →
+            </button>
+          </form>
+          
+          <div class="order-result" id="order-result" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- LIVE QUEUE & ORDER LOOKUP SECTION -->
+    <section class="wrap" id="queue-tracker">
+      <div class="section-heading">
+        <div>
+          <h2>⏱️ Live Order & Queue Tracker</h2>
+          <p>Track real-time cooking progress or cancel pending orders directly in the database.</p>
+        </div>
+      </div>
+      
+      <div class="tracker-card">
+        <label for="lookup-token-input" style="font-weight:700;display:block;margin-bottom:6px;">Look up Order by Token:</label>
+        <div class="tracker-form">
+          <input type="text" id="lookup-token-input" class="tracker-input" placeholder="Enter Token (e.g. QB-4567)">
+          <button type="button" class="tracker-btn" onclick="lookupOrder()">Check Status</button>
+        </div>
+        <div id="lookup-result" style="display:none;margin-top:15px;padding:16px;border-radius:12px;background:#f8fafc;border:1px solid #e2e8f0;"></div>
+      </div>
+
+      <!-- Live Queue Board -->
+      <div class="tracker-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <h3>📋 Live Canteen Queue Board</h3>
+          <button class="canteen-toggle-btn" onclick="refreshQueueSummary()">↻ Refresh Queue</button>
+        </div>
+        <div id="active-queue-list" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));gap:12px;"></div>
+      </div>
+
+      <!-- CANTEEN STAFF ADMIN CONTROLS -->
+      <div class="canteen-panel">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+          <div>
+            <h3>👨‍🍳 Canteen Kitchen Dashboard</h3>
+            <p style="color:var(--muted);font-size:.88rem">Kitchen staff controls: update order status to trigger live sound alerts and queue updates.</p>
+          </div>
+          <button class="canteen-toggle-btn" onclick="loadAllOrders()">Refresh Kitchen List</button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="orders-table">
+            <thead>
+              <tr>
+                <th>Token</th>
+                <th>Student</th>
+                <th>Pickup Slot</th>
+                <th>Items Ordered</th>
+                <th>Payment</th>
+                <th>Total</th>
+                <th>Database Status</th>
+                <th>Update Status</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body">
+              <tr><td colspan="8" style="text-align:center;color:var(--muted)">Loading kitchen queue...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURE 4: REVIEWS SHOWCASE SECTION -->
+    <section class="wrap" id="reviews">
+      <div class="section-heading">
+        <div>
+          <h2>⭐ Student Reviews & Ratings</h2>
+          <p>Real campus feedback saved in our SQLite database.</p>
+        </div>
+      </div>
+      <div class="reviews-grid" id="reviews-container">
+        <div style="color:var(--muted);grid-column:1/-1;">Loading student reviews...</div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FEATURE 1: UPI PAYMENT MODAL -->
+  <div class="modal-overlay" id="upi-modal">
+    <div class="modal-card">
+      <h3 style="color:#0f172a;font-size:1.3rem;">📱 Scan & Pay with UPI</h3>
+      <p style="color:var(--muted);font-size:.9rem;margin-top:4px;">Scan using any UPI App to complete your pre-order</p>
+      
+      <div class="qr-container">
+        <div class="qr-visual">
+          <div class="qr-center-pill">₹<span id="qr-amount-display">0</span></div>
+        </div>
+        <div style="font-weight:800;color:#0f172a;margin-top:10px;font-size:1.15rem;">
+          Payable: ₹<span id="modal-bill-amount">0</span>
+        </div>
+        <div style="font-size:.8rem;color:#64748b;margin-top:3px;">UPI ID: quickbite.canteen@bank</div>
+      </div>
+
+      <div class="upi-apps">
+        <span>GPay</span> • <span>PhonePe</span> • <span>Paytm</span> • <span>BHIM UPI</span>
+      </div>
+
+      <div style="margin-top:20px;display:flex;gap:10px;">
+        <button type="button" style="flex:1;background:#f1f5f9;border:0;padding:12px;border-radius:10px;font-weight:700;" onclick="closeUpiModal()">Cancel</button>
+        <button type="button" style="flex:2;background:#16a34a;color:white;border:0;padding:12px;border-radius:10px;font-weight:800;" onclick="confirmUpiAndSubmit()">✓ I Have Paid (Confirm)</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p><strong>QuickBite</strong> · Smart Canteen Queue & Pre-Order System</p>
+    <p style="margin-top:6px;font-size:.85rem">Connected to SQLite backend database (canteen.db) with UPI, Discounts, and Audio Alerts.</p>
+  </footer>
+
+  <script>
+    // State
+    let products = [];
+    let cart = [];
+    let activeCategory = 'All';
+    let selectedPayment = 'UPI';
+    let appliedCoupon = null; // { code, discountAmount }
+    let cachedOrderStatuses = {}; // For audio alert detection
+
+    // FEATURE 5: AUDIO CHIME (Web Audio API)
+    function playChime() {
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+
+        const notes = [659.25, 783.99, 1046.50]; // E5, G5, C6 (cheerful chime)
+        notes.forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq;
+          
+          const startTime = ctx.currentTime + (idx * 0.15);
+          gain.gain.setValueAtTime(0, startTime);
+          gain.gain.linearRampToValueAtTime(0.3, startTime + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.0001, startTime + 0.5);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(startTime);
+          osc.stop(startTime + 0.55);
+        });
+      } catch (e) {
+        console.warn("Audio chime not allowed yet:", e);
+      }
+    }
+
+    // 1. Fetch Menu from Backend API
+    async function loadMenu(category = 'All') {
+      activeCategory = category;
+      const grid = document.getElementById("menu-grid");
+      try {
+        const query = category === 'All' ? '' : `?category=${encodeURIComponent(category)}`;
+        const res = await fetch(`/api/menu${query}`);
+        if (!res.ok) throw new Error('Failed to fetch menu');
+        const json = await res.json();
+        products = json.data;
+        renderMenu();
+      } catch (err) {
+        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#b91c1c;">Could not load menu from database.</p>';
+      }
+    }
+
+    function renderMenu() {
+      const grid = document.getElementById("menu-grid");
+      if (!products.length) {
+        grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--muted)">No items found.</p>';
+        return;
+      }
+      grid.innerHTML = products.map(p => `
+        <article class="food-card">
+          <div class="food-rating-badge">★ ${p.avgRating || '4.8'}</div>
+          <div class="food-art" aria-hidden="true">${p.emoji}</div>
+          <div class="food-info">
+            <h3>${escapeHTML(p.name)}</h3>
+            <p>${escapeHTML(p.description)}</p>
+            <div class="food-bottom">
+              <span class="price">₹${p.price}</span>
+              <button class="add-btn" onclick="addToCart(${p.id})">＋ Add</button>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    // Category Tabs
+    document.querySelectorAll(".category-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
+        button.classList.add("active");
+        loadMenu(button.dataset.category);
+      });
+    });
+
+    // 2. Cart Operations
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      if (!product) return;
+      const item = cart.find(i => i.id === id);
+      if (item) item.quantity++;
+      else cart.push({ ...product, quantity: 1 });
+      renderCart();
+    }
+
+    function changeQuantity(id, amount) {
+      const item = cart.find(i => i.id === id);
+      if (!item) return;
+      item.quantity += amount;
+      if (item.quantity <= 0) cart = cart.filter(i => i.id !== id);
+      renderCart();
+    }
+
+    function removeItem(id) {
+      cart = cart.filter(i => i.id !== id);
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById("cart-items");
+      const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      
+      document.getElementById("cart-count").textContent = count;
+      document.getElementById("cart-subtotal").textContent = `₹${subtotal}`;
+
+      // Recalculate discount if coupon applied
+      let discountAmount = 0;
+      if (appliedCoupon && subtotal > 0) {
+        if (appliedCoupon.code === 'CAMPUS20') discountAmount = Math.round(subtotal * 0.20);
+        else if (appliedCoupon.code === 'QUICKBITE') discountAmount = subtotal >= 80 ? 25 : 0;
+        else if (appliedCoupon.code === 'STUDENT10') discountAmount = Math.round(subtotal * 0.10);
+      } else {
+        appliedCoupon = null;
+      }
+
+      const finalTotal = Math.max(0, subtotal - discountAmount);
+      document.getElementById("cart-total").textContent = `₹${finalTotal}`;
+
+      const discountRow = document.getElementById("discount-breakdown-row");
+      if (discountAmount > 0) {
+        discountRow.style.display = "flex";
+        document.getElementById("discount-label").textContent = `Discount (${appliedCoupon.code})`;
+        document.getElementById("cart-discount").textContent = `-₹${discountAmount}`;
+      } else {
+        discountRow.style.display = "none";
+      }
+
+      if (cart.length === 0) {
+        container.innerHTML = '<p class="cart-empty">Your cart is empty. Add something tasty from the menu!</p>';
+        return;
+      }
+
+      container.innerHTML = cart.map(item => `
+        <div class="cart-row">
+          <div>
+            <strong>${item.emoji} ${escapeHTML(item.name)}</strong>
+            <small>₹${item.price} each</small>
+            <div class="qty-controls">
+              <button type="button" onclick="changeQuantity(${item.id}, -1)">−</button>
+              <span>${item.quantity}</span>
+              <button type="button" onclick="changeQuantity(${item.id}, 1)">＋</button>
+              <button type="button" class="remove-btn" onclick="removeItem(${item.id})">Remove</button>
+            </div>
+          </div>
+          <strong>₹${item.price * item.quantity}</strong>
+        </div>
+      `).join("");
+    }
+
+    // FEATURE 2: COUPON LOGIC
+    async function applyCoupon() {
+      const codeInput = document.getElementById("coupon-code-input");
+      const code = codeInput.value.trim().toUpperCase();
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      if (!code) {
+        alert("Please enter a promo code.");
+        return;
+      }
+      if (subtotal === 0) {
+        alert("Please add items to your cart first.");
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/coupons/validate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, cartTotal: subtotal })
+        });
+        const json = await res.json();
+        const msg = document.getElementById("coupon-message");
+        msg.style.display = "block";
+
+        if (json.valid) {
+          appliedCoupon = { code: json.code, discountAmount: json.discountAmount };
+          msg.style.color = "#16a34a";
+          msg.textContent = `✓ ${json.message}`;
+          renderCart();
+        } else {
+          appliedCoupon = null;
+          msg.style.color = "#dc2626";
+          msg.textContent = `❌ ${json.message}`;
+          renderCart();
+        }
+      } catch (err) {
+        alert("Failed to validate promo code: " + err.message);
+      }
+    }
+
+    function quickApplyCoupon(code) {
+      document.getElementById("coupon-code-input").value = code;
+      applyCoupon();
+    }
+
+    // FEATURE 1: PAYMENT METHOD TOGGLE & MODAL
+    function selectPaymentMethod(method) {
+      selectedPayment = method;
+      document.getElementById("pay-upi-card").classList.toggle("active", method === 'UPI');
+      document.getElementById("pay-cash-card").classList.toggle("active", method === 'Cash');
+      
+      const submitBtn = document.getElementById("submit-order-btn");
+      submitBtn.textContent = method === 'UPI' 
+        ? "Pay with UPI & Place Pre-Order (₹" + getFinalTotal() + ")" 
+        : "Confirm Pre-Order (Pay Cash at Counter)";
+    }
+
+    function getFinalTotal() {
+      const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      let disc = 0;
+      if (appliedCoupon) {
+        if (appliedCoupon.code === 'CAMPUS20') disc = Math.round(subtotal * 0.20);
+        else if (appliedCoupon.code === 'QUICKBITE') disc = subtotal >= 80 ? 25 : 0;
+        else if (appliedCoupon.code === 'STUDENT10') disc = Math.round(subtotal * 0.10);
+      }
+      return Math.max(0, subtotal - disc);
+    }
+
+    // CHECKOUT SUBMISSION
+    document.getElementById("checkout-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      if (cart.length === 0) {
+        alert("Please add at least one food item to your cart.");
+        return;
+      }
+
+      const name = document.getElementById("student-name").value.trim();
+      const studentId = document.getElementById("student-id").value.trim();
+      const pickup = document.getElementById("pickup-time").value;
+
+      if (!name || !studentId || !pickup) {
+        alert("Please complete student details and pickup slot.");
+        return;
+      }
+
+      if (selectedPayment === 'UPI') {
+        // Open UPI QR modal
+        const finalAmount = getFinalTotal();
+        document.getElementById("qr-amount-display").textContent = finalAmount;
+        document.getElementById("modal-bill-amount").textContent = finalAmount;
+        document.getElementById("upi-modal").style.display = "grid";
+      } else {
+        // Cash payment direct submit
+        executeOrderCreation('Cash', 'Pending');
+      }
+    });
+
+    function closeUpiModal() {
+      document.getElementById("upi-modal").style.display = "none";
+    }
+
+    function confirmUpiAndSubmit() {
+      closeUpiModal();
+      executeOrderCreation('UPI', 'Paid');
+    }
+
+    async function executeOrderCreation(payMethod, payStatus) {
+      const name = document.getElementById("student-name").value.trim();
+      const studentId = document.getElementById("student-id").value.trim();
+      const pickup = document.getElementById("pickup-time").value;
+      const submitBtn = document.getElementById("submit-order-btn");
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Writing Order to SQLite Database...";
+
+      try {
+        const orderPayload = {
+          studentName: name,
+          studentId: studentId,
+          pickupTime: pickup,
+          paymentMethod: payMethod,
+          paymentStatus: payStatus,
+          discountCode: appliedCoupon ? appliedCoupon.code : '',
+          discountAmount: appliedCoupon ? appliedCoupon.discountAmount : 0,
+          items: cart.map(i => ({ id: i.id, quantity: i.quantity }))
+        };
+
+        const res = await fetch('/api/orders', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(orderPayload)
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to place order');
+
+        const order = data.order;
+        const result = document.getElementById("order-result");
+        result.style.display = "block";
+        result.innerHTML = `
+          <h3>✓ Order Saved to Database!</h3>
+          <div><span class="order-token-badge">Token: ${escapeHTML(order.token)}</span></div>
+          <p><strong>Student Name:</strong> ${escapeHTML(order.student_name)} (${escapeHTML(order.student_id)})</p>
+          <p><strong>Pickup Slot:</strong> ${escapeHTML(order.pickup_time)}</p>
+          <p><strong>Payment:</strong> <span style="font-weight:700;color:#16a34a;">${escapeHTML(order.payment_method)} (${escapeHTML(order.payment_status)})</span></p>
+          ${order.discount_code ? `<p><strong>Discount Applied:</strong> ${escapeHTML(order.discount_code)} (-₹${order.discount_amount})</p>` : ''}
+          <p><strong>Total Bill:</strong> ₹${order.total_amount}</p>
+          <p><strong>Queue Position:</strong> #${order.queue_number} (${order.orders_ahead} ahead of you)</p>
+          <p><strong>Status:</strong> <span class="status-pill status-Received">${order.status}</span></p>
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="button" class="checkout-btn" style="background:var(--ink);flex:1;margin-top:0;" onclick="scrollToQueueAndTrack('${escapeHTML(order.token)}')">⏱️ Track Status in Live Queue ↓</button>
+          </div>
+        `;
+
+        // Left Panel: Active Ticket
+        const cartItems = document.getElementById("cart-items");
+        cartItems.innerHTML = `
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:16px;margin-bottom:12px;">
+            <h4 style="color:#166534;margin-bottom:6px;font-size:1.05rem;">🎟️ Latest Order Active</h4>
+            <p style="font-size:.9rem;color:#14532d;">Token: <strong>${escapeHTML(order.token)}</strong> (${escapeHTML(order.student_name)})</p>
+            <p style="font-size:.85rem;color:#166534;margin-top:4px;">Status: <span class="status-pill status-Received">Received</span></p>
+            <button type="button" style="margin-top:10px;background:#15803d;color:white;border:0;border-radius:7px;padding:6px 12px;font-size:.82rem;font-weight:700;" onclick="scrollToQueueAndTrack('${escapeHTML(order.token)}')">View Kitchen Live Progress →</button>
+          </div>
+          <p class="cart-empty" style="padding:10px 0;">Cart is empty. You can add more items!</p>
+        `;
+
+        // Reset state
+        cart = [];
+        appliedCoupon = null;
+        document.getElementById("coupon-code-input").value = '';
+        document.getElementById("coupon-message").style.display = 'none';
+        renderCart();
+        document.getElementById("checkout-form").reset();
+        selectPaymentMethod('UPI');
+
+        document.getElementById("order").scrollIntoView({ behavior: "smooth", block: "start" });
+
+        refreshQueueSummary();
+        loadAllOrders();
+
+      } catch (err) {
+        alert("Error placing order: " + err.message);
+      } finally {
+        submitBtn.disabled = false;
+        selectPaymentMethod(selectedPayment);
+      }
+    }
+
+    // Scroll & Track Helper
+    function scrollToQueueAndTrack(token) {
+      document.getElementById("queue-tracker").scrollIntoView({ behavior: "smooth", block: "start" });
+      const input = document.getElementById("lookup-token-input");
+      if (input) input.value = token;
+      lookupOrder(token);
+    }
+
+    // 4. Lookup Order by Token
+    async function lookupOrder(tokenParam = null) {
+      const input = document.getElementById("lookup-token-input");
+      const token = (tokenParam || input.value).trim().toUpperCase();
+      if (!token) {
+        alert("Please enter an order token (e.g. QB-4567)");
+        return;
+      }
+
+      const resBox = document.getElementById("lookup-result");
+      resBox.style.display = "block";
+      resBox.innerHTML = "Fetching order from database...";
+
+      try {
+        const res = await fetch(`/api/orders/${encodeURIComponent(token)}`);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Order not found');
+
+        const order = data.order;
+        const statusClass = `status-${order.status.replace(/\s+/g, '')}`;
+
+        // FEATURE 5: AUDIO ALERT when order is Ready for Pickup
+        if (order.status === 'Ready for Pickup' && cachedOrderStatuses[token] !== 'Ready for Pickup') {
+          playChime();
+        }
+        cachedOrderStatuses[token] = order.status;
+
+        // FEATURE 3: Cancel Order button if status is Received
+        const canCancel = order.status === 'Received';
+        const cancelBtnHtml = canCancel ? `
+          <div style="margin-top:12px;padding-top:10px;border-top:1px dashed #cbd5e1;">
+            <button class="cancel-order-btn" onclick="cancelOrderPrompt('${escapeHTML(order.token)}')">
+              ❌ Cancel Pre-Order
+            </button>
+            <small style="color:var(--muted);margin-left:8px;">(Allowed while in 'Received' status)</small>
+          </div>
+        ` : '';
+
+        // FEATURE 4: Rate Meal Widget if completed or ready
+        const firstProductId = order.items && order.items.length ? order.items[0].product_id : 1;
+        const firstProductName = order.items && order.items.length ? order.items[0].product_name : 'Meal';
+        const reviewWidgetHtml = `
+          <div class="review-box">
+            <h4 style="color:#b45309;font-size:.95rem;">⭐ Rate your food: ${escapeHTML(firstProductName)}</h4>
+            <div class="star-rating" id="star-picker">
+              <span class="star" onclick="setRating(1)">★</span>
+              <span class="star" onclick="setRating(2)">★</span>
+              <span class="star" onclick="setRating(3)">★</span>
+              <span class="star" onclick="setRating(4)">★</span>
+              <span class="star selected" onclick="setRating(5)">★</span>
+            </div>
+            <input type="text" id="review-comment-input" placeholder="Leave a quick review (e.g. Super tasty and hot!)" style="width:100%;padding:8px 10px;border:1px solid #fed7aa;border-radius:7px;font-size:.85rem;margin-bottom:8px;">
+            <button type="button" style="background:#ea580c;color:white;border:0;padding:6px 14px;border-radius:6px;font-weight:700;font-size:.82rem;" onclick="submitReview('${escapeHTML(order.token)}', '${escapeHTML(order.student_name)}', ${firstProductId})">Submit Rating</button>
+            <span id="review-status-msg" style="margin-left:8px;font-size:.82rem;color:#16a34a;font-weight:700;"></span>
+          </div>
+        `;
+
+        resBox.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+            <div>
+              <span class="order-token-badge" style="font-size:1.1rem;margin:0;">${escapeHTML(order.token)}</span>
+              <span style="margin-left:8px;font-weight:700;">${escapeHTML(order.student_name)}</span>
+            </div>
+            <span class="status-pill ${statusClass}">${escapeHTML(order.status)}</span>
+          </div>
+          <div style="margin-top:10px;font-size:.9rem;line-height:1.6;">
+            <div><strong>Pickup Slot:</strong> ${escapeHTML(order.pickup_time)}</div>
+            <div><strong>Orders Ahead:</strong> ${order.orders_ahead} order(s)</div>
+            <div><strong>Items:</strong> ${order.items.map(i => `${escapeHTML(i.product_name)} × ${i.quantity}`).join(', ')}</div>
+            <div><strong>Payment:</strong> ${escapeHTML(order.payment_method)} (${escapeHTML(order.payment_status)})</div>
+            <div><strong>Total Paid:</strong> ₹${order.total_amount}</div>
+          </div>
+          ${cancelBtnHtml}
+          ${reviewWidgetHtml}
+        `;
+      } catch (err) {
+        resBox.innerHTML = `<p style="color:#dc2626;">❌ ${escapeHTML(err.message)}</p>`;
+      }
+    }
+
+    // FEATURE 3: CANCEL ORDER
+    async function cancelOrderPrompt(token) {
+      if (!confirm(`Are you sure you want to cancel order ${token}?`)) return;
+      try {
+        const res = await fetch(`/api/orders/${encodeURIComponent(token)}/cancel`, {
+          method: 'POST'
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || 'Failed to cancel order');
+        alert(`Order ${token} has been cancelled.`);
+        lookupOrder(token);
+        refreshQueueSummary();
+        loadAllOrders();
+      } catch (e) {
+        alert("Cancel error: " + e.message);
+      }
+    }
+
+    // FEATURE 4: RATING WIDGET
+    let currentRatingValue = 5;
+    function setRating(val) {
+      currentRatingValue = val;
+      const stars = document.querySelectorAll("#star-picker .star");
+      stars.forEach((s, idx) => {
+        s.classList.toggle("selected", idx < val);
+      });
+    }
+
+    async function submitReview(token, studentName, productId) {
+      const comment = document.getElementById("review-comment-input").value.trim();
+      const msg = document.getElementById("review-status-msg");
+      try {
+        const res = await fetch('/api/reviews', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            token,
+            studentName,
+            productId,
+            rating: currentRatingValue,
+            comment: comment || 'Delicious!'
+          })
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || 'Failed to submit review');
+        msg.textContent = '✓ Review saved to database!';
+        loadReviews();
+        loadMenu(activeCategory);
+      } catch (err) {
+        alert("Review error: " + err.message);
+      }
+    }
+
+    async function loadReviews() {
+      const container = document.getElementById("reviews-container");
+      try {
+        const res = await fetch('/api/reviews?limit=8');
+        const json = await res.json();
+        if (!json.success || !json.data.length) {
+          container.innerHTML = '<p style="color:var(--muted);">No reviews yet. Be the first to leave one!</p>';
+          return;
+        }
+
+        container.innerHTML = json.data.map(r => `
+          <div class="review-item">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <strong>${escapeHTML(r.student_name)}</strong>
+              <span style="color:#f59e0b;font-weight:750;">★ ${r.rating}.0</span>
+            </div>
+            <div style="font-size:.82rem;color:var(--orange-dark);font-weight:700;margin-top:3px;">
+              ${escapeHTML(r.product_name)}
+            </div>
+            <p style="font-size:.88rem;color:#334155;margin-top:6px;font-style:italic;">
+              "${escapeHTML(r.comment)}"
+            </p>
+            <div style="font-size:.75rem;color:var(--muted);margin-top:8px;">${r.created_at}</div>
+          </div>
+        `).join('');
+      } catch (e) {
+        container.innerHTML = '<p style="color:var(--muted);">Could not load reviews.</p>';
+      }
+    }
+
+    // 5. Live Queue Summary Board
+    async function refreshQueueSummary() {
+      try {
+        const res = await fetch('/api/queue');
+        const json = await res.json();
+        if (!json.success) return;
+
+        const { metrics, activeOrders } = json.data;
+        document.getElementById('stat-preparing').textContent = metrics.preparing || 0;
+        document.getElementById('stat-ready').textContent = metrics.ready || 0;
+        document.getElementById('hero-status-text').textContent = 
+          `${metrics.total} orders stored in DB (${metrics.ready} ready for pickup)`;
+
+        const container = document.getElementById('active-queue-list');
+        if (!activeOrders || activeOrders.length === 0) {
+          container.innerHTML = '<p style="color:var(--muted);grid-column:1/-1;">No pending orders in the queue right now.</p>';
+          return;
+        }
+
+        container.innerHTML = activeOrders.map(o => {
+          const statusClass = `status-${o.status.replace(/\s+/g, '')}`;
+          return `
+            <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <strong>${escapeHTML(o.token)}</strong>
+                <span class="status-pill ${statusClass}">${escapeHTML(o.status)}</span>
+              </div>
+              <div style="font-size:.82rem;color:var(--muted);margin-top:5px;">
+                ${escapeHTML(o.student_name)} · ${escapeHTML(o.pickup_time)}
+              </div>
+              <button style="margin-top:8px;font-size:.78rem;border:0;background:#e2e8f0;border-radius:5px;padding:3px 8px;" onclick="lookupOrder('${o.token}')">Track Details</button>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error('Queue summary error:', err);
+      }
+    }
+
+    // 6. Canteen Kitchen List & Status Updates
+    async function loadAllOrders() {
+      const tbody = document.getElementById("orders-table-body");
+      try {
+        const res = await fetch('/api/orders?limit=15');
+        const json = await res.json();
+        if (!json.success || !json.data.length) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px;">No orders found in database yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = json.data.map(order => {
+          const itemsSummary = order.items.map(i => `${escapeHTML(i.product_name)} × ${i.quantity}`).join(', ');
+          const statusClass = `status-${order.status.replace(/\s+/g, '')}`;
+          return `
+            <tr>
+              <td><strong>${escapeHTML(order.token)}</strong></td>
+              <td>${escapeHTML(order.student_name)}<br><small style="color:var(--muted)">${escapeHTML(order.student_id)}</small></td>
+              <td>${escapeHTML(order.pickup_time)}</td>
+              <td style="max-width:180px;">${itemsSummary}</td>
+              <td><span style="font-size:.8rem;font-weight:700;">${escapeHTML(order.payment_method || 'Cash')}</span><br><small style="color:${order.payment_status === 'Paid' ? '#16a34a' : '#d97706'}">${escapeHTML(order.payment_status || 'Pending')}</small></td>
+              <td><strong>₹${order.total_amount}</strong></td>
+              <td><span class="status-pill ${statusClass}">${escapeHTML(order.status)}</span></td>
+              <td>
+                <select class="status-select" onchange="updateStatus(${order.id}, this.value, '${order.token}')">
+                  <option value="" disabled selected>Change Status</option>
+                  <option value="Received">Received</option>
+                  <option value="Preparing">Preparing</option>
+                  <option value="Ready for Pickup">Ready for Pickup 🔔</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Cancelled">Cancelled</option>
+                </select>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#dc2626;">Failed to load orders: ${escapeHTML(err.message)}</td></tr>`;
+      }
+    }
+
+    async function updateStatus(orderId, newStatus, token) {
+      if (!newStatus) return;
+      try {
+        const res = await fetch(`/api/orders/${orderId}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const json = await res.json();
+        if (!res.ok) throw new Error(json.error || 'Failed to update');
+
+        // Play chime if marked ready for pickup
+        if (newStatus === 'Ready for Pickup') {
+          playChime();
+        }
+        
+        loadAllOrders();
+        refreshQueueSummary();
+      } catch (err) {
+        alert("Failed to update status: " + err.message);
+      }
+    }
+
+    function escapeHTML(value) {
+      if (!value) return '';
+      return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      })[char]);
+    }
+
+    // Initializations
+    loadMenu();
+    refreshQueueSummary();
+    loadAllOrders();
+    loadReviews();
+
+    // Auto-refresh queue every 15 seconds
+    setInterval(refreshQueueSummary, 15000);
+  </script>
+</body>
+</html>
